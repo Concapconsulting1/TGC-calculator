@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="container">
+            <div class="row mt-5 mb-5">
+                <div class="col-md-12">
+                    <div class="logo">
+                        <img src="./assets/img/Screenshot_2024-02-05_183507-removebg-pr.png" alt="">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="main_wrap">
+                        <div class="row rowGaping">
+                            <div class="col-md-6">
+                                <div class="">
+                                    <div class="positionAdj">
+                                        <label for="avgNightlyRentRate">Average Nightly Rental Rate (Pulled from AirDNA data)</label>
+                                        <div class="thumb-container">
+                                            <h6 class="range-thumb" data-val="$100" id="range_1"></h6>
+                                        </div>
+                                        <input id="avgNightlyRentRate" oninput="setVal(this);calcFun()" value="100"
+                                            min="100" max="500" step="10" type="range" class="range" data-id="1" />
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="">
+                                    <div class="positionAdj">
+                                        <label for="rentalOccupancyPercentage">Rental Occupancy Percentage (Pulled from AirDNA data)</label>
+                                        <div class="thumb-container">
+                                            <h6 class="range-thumb" data-val="46%" id="range_2"></h6>
+                                        </div>
+                                        <input id="rentalOccupancyPercentage" oninput="setVal(this);calcFun()" value="46"
+                                            min="0" max="100" step="1" type="range" class="range" data-id="1" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="inputLabel_wrap">
+                                    <div>
+                                        <label for="no_ofDays_ownerWillUseProperty">How many days would you stay at this property?</label>
+                                    </div>
+                                    <div>
+                                        <input type="text" class="form-control" value="182" oninput="calcFun()"
+                                            id="no_ofDays_ownerWillUseProperty">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="inputLabel_wrap">
+                                    <div>
+                                        <label for="yearly_CPI_InflationRate">Yearly CPI Inflation Rate (low, mid, high)</label>
+                                    </div>
+                                    <div>
+                                        <select name="" id="yearly_CPI_InflationRate" onchange="calcFun()"
+                                            class="form-select">
+                                            <option value="1.03">3.2%</option>
+                                            <option value="1.04">4.3%</option>
+                                            <option value="1.05">5.1%</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="inputLabel_wrap">
+                                    <div>
+                                        <label for="timeHorizonforAnalysis">Time Horizon for Analysis (years)</label>
+                                    </div>
+                                    <div>
+                                        <input type="text" class="form-control" value="5" oninput="calcFun()"
+                                            id="timeHorizonforAnalysis">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="inputLabel_wrap">
+                                    <div>
+                                        <label for="propertyCost">Property Cost (Initial Investment)</label>
+                                    </div>
+                                    <div>
+                                        <input type="text" class="form-control dollarformat" value="$10,000.00"
+                                            oninput="calcFun()" id="propertyCost">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="inputLabel_wrap">
+                                    <div>
+                                        <label for="propertyValueAppreciationRate">Property Value Appreciation
+                                            Rate (low, mid, high)</label>
+                                    </div>
+                                    <div style="position: relative;">
+                                        <select name="" id="propertyValueAppreciationRate" onchange="calcFun()"
+                                            class="form-select">
+                                            <option value="0.038">3.8%</option>
+                                            <option value="0.046">4.6%</option>
+                                            <option value="0.058">5.8%</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid" style="background: #ffffff;">
+        <div class="container padding_top pb-5">
+            <div class="row mt-5 mb-5 reversOnMob" style="align-items: center;">
+                <div class="col-md-6">
+                    <figure class="highcharts-figure">
+                         
+                          <div id="container" style="max-width: 300px;max-height: 300px;"></div>
+                      </figure>
+                </div>
+                <div class="col-md-6">
+                    <div class="main_wrap">
+                        <div class="row rowGaping">
+                            <div class="col-md-12" style="display: none;">
+                                <div class="resultColumn row">
+                                    <div class="col-md-7">
+                                        <h3>Number of Days Owner is Not in the Property per Year</h3>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <span id="no_ofDays_ownerNotInProperty_perYear">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="resultColumn row">
+                                    <div class="col-2">
+                                        <div class="colorSet colorSet_1">
+                                            &nbsp;
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <h3>Potential Yearly Rental Income (PYRI)</h3>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <span id="PYRI">$0</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="resultColumn row">
+                                    <div class="col-2">
+                                        <div class="colorSet colorSet_2">
+                                            &nbsp;
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <h3>Potential Rental Income Over Time (PRIT)</h3>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <span id="PRIT">$0</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="resultColumn row">
+                                    <div class="col-2">
+                                        <div class="colorSet colorSet_3">
+                                            &nbsp;
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <h3>Potential Property Value Over Time (PPVOT)</h3>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <span id="PPVOT">$0</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="resultColumn row">
+                                    <div class="col-2">
+                                        <div class="">
+                                            &nbsp;
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-8 col-md-10">
+                                        <div class="resultbox">
+                                            <h1 id="ROI">0%</h1>
+                                            <h3>Total Return on Investment (ROI) on Initial Investment</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="./assets/js/app.js"></script>
+
+</body>
+
+</html>
